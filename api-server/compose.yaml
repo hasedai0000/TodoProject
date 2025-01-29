@@ -65,3 +65,17 @@ services:
         published: ${MAILPIT_PUBLISHED_PORT:-8025}
         protocol: tcp
         mode: host
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    ports:
+      - target: 8080
+        published: ${SWAGGER_UI_PORT:-8080}
+        protocol: tcp
+        mode: host
+    volumes:
+      - type: bind
+        source: ./openapi
+        target: /usr/share/nginx/html/openapi
+    environment:
+      - URL=/openapi/openapi.yaml
