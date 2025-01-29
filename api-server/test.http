@@ -1,4 +1,8 @@
-GET http://127.0.0.1/user/
+POST http://127.0.0.1/api/login/
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 1|DXEle5g3lQHROtql9uMuiY2zCO68BGDxoONbEMY1dd952750
+
+{
+  "email": "john@example.com",
+  "password": "passworddd"
+}
