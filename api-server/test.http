@@ -3,6 +3,14 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "john@example.com",
-  "password": "passworddd"
+  "email": "test@examle.com",
+  "password": "password"
 }
+
+###
+
+POST http://127.0.0.1/api/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer 5|X1JU0B7kP7riKar5yCA0EmtZUZzcoK9avdnlxi5h84674c2c
+

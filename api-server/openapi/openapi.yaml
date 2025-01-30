@@ -17,6 +17,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/AuthResponseDto"
+  /api/logout:
+    post:
+      operationId: LoginController_logout
+      parameters: []
+      responses:
+        "200":
+          description: ログアウト完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthResponseDto"
 info:
   title: API description
   description: ""

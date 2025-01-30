@@ -22,7 +22,7 @@ class LoginController extends BaseController
       'password' => $request->password
     ])) {
       $user = Auth::user();
-      $success['token'] = $user->createToken('MyApp')->plainTextToken;
+      $success['token'] = $user->createToken('AccessToken')->plainTextToken;
       $success['name'] = $user->name;
 
       return $this->sendResponse($success, 'User login successfully.');
