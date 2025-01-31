@@ -16,7 +16,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponseDto"
+                $ref: "#/components/schemas/LoginResponseDto"
   /api/logout:
     post:
       operationId: LoginController_logout
@@ -27,7 +27,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponseDto"
+                $ref: "#/components/schemas/LogoutResponseDto"
 info:
   title: API description
   description: ""
@@ -95,7 +95,7 @@ components:
         - password
         - createdAt
         - updatedAt
-    AuthResponseDto:
+    LoginResponseDto:
       type: object
       properties:
         success:
@@ -113,6 +113,22 @@ components:
         message:
           type: string
           example: User login successfully.
+      required:
+        - success
+        - data
+        - message
+    LogoutResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          example: []
+        message:
+          type: string
+          example: User logout successfully.
       required:
         - success
         - data
