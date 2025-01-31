@@ -1,4 +1,7 @@
-POST http://127.0.0.1/api/login/
+@baseUrl = http://127.0.0.1/api
+
+# @name login
+POST {{baseUrl}}/login/
 Content-Type: application/json
 Accept: application/json
 
@@ -9,8 +12,10 @@ Accept: application/json
 
 ###
 
-POST http://127.0.0.1/api/logout/
+@accessToken = {{login.response.body.data.token}}
+
+# @name logout
+POST {{baseUrl}}/logout/
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 5|X1JU0B7kP7riKar5yCA0EmtZUZzcoK9avdnlxi5h84674c2c
-
+Authorization: Bearer {{accessToken}}
