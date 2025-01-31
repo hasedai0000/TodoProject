@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Requests\Auth\LoginRequest;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
-class LoginController extends BaseController
+class AuthController extends BaseController
 {
   /**
    * Login api
@@ -21,13 +21,25 @@ class LoginController extends BaseController
       'email' => $request->email,
       'password' => $request->password
     ])) {
+      /** @var \App\Models\User $user **/
       $user = Auth::user();
-      $success['token'] = $user->createToken('MyApp')->plainTextToken;
+      $success['token'] = $user->createToken('AccessToken')->plainTextToken;
       $success['name'] = $user->name;
 
       return $this->sendResponse($success, 'User login successfully.');
     } else {
       return $this->sendError('Unauthorized.', ['error' => 'Unauthorized.']);
     }
+  }
+
+  /**
+   * Logout api
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function logout(Request $request)
+  {
+    $request->user()->currentAccessToken()->delete();
+    return $this->sendResponse([], 'User logout successfully.');
   }
 }

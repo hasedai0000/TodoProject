@@ -1,8 +1,21 @@
-POST http://127.0.0.1/api/login/
+@baseUrl = http://127.0.0.1/api
+
+# @name login
+POST {{baseUrl}}/login/
 Content-Type: application/json
 Accept: application/json
 
 {
-  "email": "john@example.com",
-  "password": "passworddd"
+  "email": "test@examle.com",
+  "password": "password"
 }
+
+###
+
+@accessToken = {{login.response.body.data.token}}
+
+# @name logout
+POST {{baseUrl}}/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{accessToken}}

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 
-class LoginControllerTest extends TestCase
+class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -17,7 +17,7 @@ class LoginControllerTest extends TestCase
      * @return void
      *
      */
-    public function testSuccess(): void
+    public function testLoginSuccess(): void
     {
         User::factory()->create([
             'name' => 'test',
@@ -51,7 +51,7 @@ class LoginControllerTest extends TestCase
     /**
      * @return void
      */
-    public function testUnauthorized(): void
+    public function testLoginUnauthorized(): void
     {
         $params = [
             'email' => 'testttt@example.com',
@@ -76,7 +76,7 @@ class LoginControllerTest extends TestCase
     /**
      * return void
      */
-    public function testValidation(): void
+    public function testLoginValidation(): void
     {
         $this->postJson('/api/login', [])
             ->assertStatus(422)
@@ -91,5 +91,38 @@ class LoginControllerTest extends TestCase
                     ],
                 ],
             ]);
+    }
+
+    /**
+     * @return void
+     */
+    public function testLogoutSuccess(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'test@example.com',
+            'password' => bcrypt('password123'),
+        ]);
+
+        $token = $user->createToken('AccessToken')->plainTextToken;
+
+        $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->postJson('/api/logout')
+            ->assertStatus(200)
+            ->assertJson(['message' => 'User logout successfully.']);
+    }
+
+    /**
+     * return void
+     */
+    public function testUnauthorized(): void
+    {
+        $response = $this->postJson('/api/logout')
+            ->assertStatus(401)
+            ->assertJson([
+                'message' => 'Unauthenticated.',
+            ]);
+
+        $responseData = $response->json();
+        $this->assertEquals('Unauthenticated.', $responseData['message']);
     }
 }
