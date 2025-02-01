@@ -4,12 +4,30 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Validator;
 
 class AuthController extends BaseController
 {
+  /**
+   * Register api
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function register(RegisterRequest $request)
+  {
+    $input = $request->all();
+    $input['password'] = bcrypt($input['password']);
+    $user = User::create($input);
+    $success['token'] =  $user->createToken('AccessToken')->plainTextToken;
+    $success['name'] =  $user->name;
+
+    return $this->sendResponse($success, 'User register successfully.');
+  }
+
   /**
    * Login api
    *

@@ -3,107 +3,175 @@
 namespace Tests\Feature\Http\Controllers\Auth;
 
 use App\Models\User;
+use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class AuthControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    /**
-     * @return void
-     *
-     */
-    public function testLoginSuccess(): void
+    private const TEST_USER = [
+        'name' => 'test',
+        'email' => 'test@example.com',
+        'password' => 'password',
+    ];
+
+    private const REGISTER_PARAMS = [
+        'name' => 'testRegister',
+        'email' => 'testRegister@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+    ];
+
+    private User $user;
+
+    protected function setUp(): void
     {
-        User::factory()->create([
-            'name' => 'test',
-            'email' => 'test@example.com',
-            'password' => Hash::make('password'),
+        parent::setUp();
+        $this->user = User::factory()->create([
+            'name' => self::TEST_USER['name'],
+            'email' => self::TEST_USER['email'],
+            'password' => Hash::make(self::TEST_USER['password']),
         ]);
+    }
 
-        $params = [
-            'email' => 'test@example.com',
-            'password' => 'password',
-        ];
+    private function assertSuccessResponse(array $response, string $name, string $message): void
+    {
+        $this->assertTrue($response['success']);
+        $this->assertEquals($name, $response['data']['name']);
+        $this->assertMatchesRegularExpression('/^\d+\|[A-Za-z0-9]+$/', $response['data']['token']);
+        $this->assertEquals($message, $response['message']);
+    }
 
-        $response = $this->postJson('/api/login', $params)
+    private function assertErrorResponse(array $response, string $message): void
+    {
+        $this->assertFalse($response['success']);
+        $this->assertEquals($message, $response['message']);
+    }
+
+    #[Test]
+    public function testRegisterSuccess(): void
+    {
+        $response = $this->postJson('/api/register', self::REGISTER_PARAMS)
             ->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => [
-                    'name',
-                    'token'
-                ],
+                'data' => ['name', 'token'],
                 'message'
             ]);
 
-        $responseData = $response->json();
-        $this->assertTrue($responseData['success']);
-        $this->assertEquals('test', $responseData['data']['name']);
-        $this->assertMatchesRegularExpression('/^\d+\|[A-Za-z0-9]+$/', $responseData['data']['token']);
-        $this->assertEquals('User login successfully.', $responseData['message']);
+        $this->assertSuccessResponse(
+            $response->json(),
+            self::REGISTER_PARAMS['name'],
+            'User register successfully.'
+        );
     }
 
-    /**
-     * @return void
-     */
+    #[Test]
+    #[DataProvider('validationDataProvider')]
+    public function testRegisterValidation(
+        array $params,
+        array $expectedErrors,
+        string $expectedMessage
+    ): void {
+        $this->postJson('/api/register', $params)
+            ->assertStatus(422)
+            ->assertJson([
+                'message' => $expectedMessage,
+                'errors' => $expectedErrors,
+            ]);
+    }
+
+    public static function validationDataProvider(): array
+    {
+        return [
+            'required' => [
+                'params' => [
+                    'name' => '',
+                    'email' => '',
+                    'password' => '',
+                    'password_confirmation' => '',
+                ],
+                'expectedErrors' => [
+                    'name' => ['The name field is required.'],
+                    'email' => ['The email field is required.'],
+                    'password' => ['The password field is required.'],
+                    'password_confirmation' => ['The password confirmation field is required.'],
+                ],
+                'expectedMessage' => 'The name field is required. (and 3 more errors)',
+            ],
+            'email' => [
+                'params' => array_merge(self::REGISTER_PARAMS, ['email' => 'test.example.com']),
+                'expectedErrors' => [
+                    'email' => ['The email field must be a valid email address.'],
+                ],
+                'expectedMessage' => 'The email field must be a valid email address.',
+            ],
+            'unique' => [
+                'params' => array_merge(self::REGISTER_PARAMS, ['email' => self::TEST_USER['email']]),
+                'expectedErrors' => [
+                    'email' => ['The email has already been taken.'],
+                ],
+                'expectedMessage' => 'The email has already been taken.',
+            ],
+            'password_confirmation' => [
+                'params' => array_merge(self::REGISTER_PARAMS, [
+                    'password_confirmation' => 'wrong_password'
+                ]),
+                'expectedErrors' => [
+                    'password_confirmation' => ['The password confirmation field must match password.'],
+                ],
+                'expectedMessage' => 'The password confirmation field must match password.',
+            ],
+        ];
+    }
+
+    #[Test]
+    public function testLoginSuccess(): void
+    {
+        $response = $this->postJson('/api/login', [
+            'email' => self::TEST_USER['email'],
+            'password' => self::TEST_USER['password'],
+        ])
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'data' => ['name', 'token'],
+                'message'
+            ]);
+
+        $this->assertSuccessResponse(
+            $response->json(),
+            self::TEST_USER['name'],
+            'User login successfully.'
+        );
+    }
+
+    #[Test]
     public function testLoginUnauthorized(): void
     {
-        $params = [
-            'email' => 'testttt@example.com',
-            'password' => 'password',
-        ];
-
-        $response = $this->postJson('/api/login', $params)
+        $this->postJson('/api/login', [
+            'email' => 'wrong@example.com',
+            'password' => 'wrong_password',
+        ])
             ->assertStatus(404)
             ->assertJson([
                 'success' => false,
                 'message' => 'Unauthorized.',
-                "data" => [
-                    "error" => "Unauthorized."
-                ]
-            ]);
-
-        $responseData = $response->json();
-        $this->assertFalse($responseData['success']);
-        $this->assertEquals('Unauthorized.', $responseData['message']);
-    }
-
-    /**
-     * return void
-     */
-    public function testLoginValidation(): void
-    {
-        $this->postJson('/api/login', [])
-            ->assertStatus(422)
-            ->assertJson([
-                'message' => 'The email field is required. (and 1 more error)',
-                'errors' => [
-                    'email' => [
-                        'The email field is required.',
-                    ],
-                    'password' => [
-                        'The password field is required.',
-                    ],
-                ],
+                'data' => ['error' => 'Unauthorized.']
             ]);
     }
 
-    /**
-     * @return void
-     */
+    #[Test]
     public function testLogoutSuccess(): void
     {
-        $user = User::factory()->create([
-            'email' => 'test@example.com',
-            'password' => bcrypt('password123'),
-        ]);
-
-        $token = $user->createToken('AccessToken')->plainTextToken;
+        $token = $this->user->createToken('AccessToken')->plainTextToken;
 
         $this->withHeader('Authorization', 'Bearer ' . $token)
             ->postJson('/api/logout')
@@ -111,18 +179,11 @@ class AuthControllerTest extends TestCase
             ->assertJson(['message' => 'User logout successfully.']);
     }
 
-    /**
-     * return void
-     */
-    public function testUnauthorized(): void
+    #[Test]
+    public function testLogoutUnauthorized(): void
     {
-        $response = $this->postJson('/api/logout')
+        $this->postJson('/api/logout')
             ->assertStatus(401)
-            ->assertJson([
-                'message' => 'Unauthenticated.',
-            ]);
-
-        $responseData = $response->json();
-        $this->assertEquals('Unauthenticated.', $responseData['message']);
+            ->assertJson(['message' => 'Unauthenticated.']);
     }
 }
