@@ -1,5 +1,22 @@
 openapi: 3.0.0
 paths:
+  /api/register:
+    post:
+      operationId: AuthController_register
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignUpUserDto"
+      responses:
+        "200":
+          description: ユーザー登録完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignUpResponseDto"
   /api/login:
     post:
       operationId: LoginController_login
@@ -43,6 +60,21 @@ components:
       bearerFormat: JWT
       type: http
   schemas:
+    SignUpUserDto:
+      type: object
+      properties:
+        name:
+          type: string
+          example: ユーザー1
+        email:
+          type: string
+          example: user1@test.com
+        password:
+          type: string
+          example: password
+        password_confirmation:
+          type: string
+          example: password
     SignInUserDto:
       type: object
       properties:
@@ -95,6 +127,28 @@ components:
         - password
         - createdAt
         - updatedAt
+    SignUpResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+              example: ユーザー1
+            token:
+              type: string
+              example: 3|gp3F2vTrNwdY5AgZVdkPfk22xHErjwmGpRT93yEO0c026938
+        message:
+          type: string
+          example: User registered successfully.
+      required:
+        - success
+        - data
+        - message
     LoginResponseDto:
       type: object
       properties:
