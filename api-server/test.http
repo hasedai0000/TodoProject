@@ -1,4 +1,47 @@
-GET http://127.0.0.1/user/
+@baseUrl = http://127.0.0.1/api
+@email = test@example.com
+@password = password
+
+# @name register
+POST {{baseUrl}}/register/
 Content-Type: application/json
 Accept: application/json
-Authorization: Bearer 1|DXEle5g3lQHROtql9uMuiY2zCO68BGDxoONbEMY1dd952750
+
+{
+  "name": "test",
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}"
+}
+
+###
+
+# @name login
+POST {{baseUrl}}/login/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+
+@tokenFromRegister = {{register.response.body.data.token}}
+# @name logout
+POST {{baseUrl}}/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenFromRegister}}
+
+###
+
+# @name logout
+@tokenFromLogin = {{login.response.body.data.token}}
+
+POST {{baseUrl}}/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenFromLogin}}
+

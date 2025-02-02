@@ -1,109 +1,25 @@
 openapi: 3.0.0
 paths:
-  /api/todo:
+  /api/register:
     post:
-      operationId: TodoController_create
+      operationId: AuthController_register
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/CreateTodoDto"
-      responses:
-        "201":
-          description: Todo新規作成完了
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FindTodoResponseDto"
-        "401":
-          description: 認証エラー
-      tags: &ref_0
-        - todo
-      security: &ref_1
-        - bearer: []
-    get:
-      operationId: TodoController_findAll
-      parameters: []
+              $ref: "#/components/schemas/SignUpUserDto"
       responses:
         "200":
-          description: Todoリスト取得完了
+          description: ユーザー登録完了
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/FindTodoListResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_0
-      security: *ref_1
-  /api/todo/{id}:
-    get:
-      operationId: TodoController_findOne
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Todo取得完了
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FindTodoResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_0
-      security: *ref_1
-    patch:
-      operationId: TodoController_update
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateTodoDto"
-      responses:
-        "200":
-          description: Todo更新完了
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FindTodoResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_0
-      security: *ref_1
-    delete:
-      operationId: TodoController_remove
-      parameters:
-        - name: id
-          required: true
-          in: path
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Todo削除完了
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/FindTodoResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_0
-      security: *ref_1
-  /api/auth/sign_in:
+                $ref: "#/components/schemas/SignUpResponseDto"
+  /api/login:
     post:
-      operationId: AuthController_signIn
+      operationId: LoginController_login
       parameters: []
       requestBody:
         required: true
@@ -117,47 +33,18 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponseDto"
-        "401":
-          description: 認証エラー
-      tags: &ref_2
-        - auth
-  /api/auth/sign_up:
+                $ref: "#/components/schemas/LoginResponseDto"
+  /api/logout:
     post:
-      operationId: AuthController_signUp
-      parameters: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/SignUpUserDto"
-      responses:
-        "201":
-          description: 会員登録完了
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/AuthResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_2
-  /api/auth/authentication:
-    post:
-      operationId: AuthController_authentication
+      operationId: LoginController_logout
       parameters: []
       responses:
         "200":
-          description: 認証チェックOK
+          description: ログアウト完了
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponseDto"
-        "401":
-          description: 認証エラー
-      tags: *ref_2
-      security:
-        - bearer: []
+                $ref: "#/components/schemas/LogoutResponseDto"
 info:
   title: API description
   description: ""
@@ -173,109 +60,21 @@ components:
       bearerFormat: JWT
       type: http
   schemas:
-    CreateTodoDto:
+    SignUpUserDto:
       type: object
       properties:
-        title:
+        name:
           type: string
-          example: Todo4 created
-          minLength: 2
-          maxLength: 25
-        content:
+          example: ユーザー1
+        email:
           type: string
-          example: Todo content4 sample created
-      required:
-        - title
-        - content
-    TodoEntity:
-      type: object
-      properties:
-        id:
-          type: number
-          example: 1
-        title:
+          example: user1@test.com
+        password:
           type: string
-          example: Todo1 sample
-          minLength: 2
-          maxLength: 25
-        content:
+          example: password
+        password_confirmation:
           type: string
-          example: Todo content1 sample
-        userId:
-          type: string
-          example: 1
-        createdAt:
-          format: date-time
-          type: string
-          example: "2022-10-28T08:38:14.237Z"
-        updatedAt:
-          format: date-time
-          type: string
-          example: "2022-10-28T08:38:14.237Z"
-      required:
-        - id
-        - title
-        - content
-        - userId
-        - createdAt
-        - updatedAt
-    FindTodoResponseDto:
-      type: object
-      properties:
-        todo:
-          example:
-            id: 1
-            title: Todo1 sample
-            content: Todo content1 sample
-            userId: 1
-            createdAt: "2022-10-28T08:38:14.237Z"
-            updatedAt: "2022-10-28T08:38:14.237Z"
-          allOf:
-            - $ref: "#/components/schemas/TodoEntity"
-      required:
-        - todo
-    FindTodoListResponseDto:
-      type: object
-      properties:
-        todos:
-          example:
-            - id: 1
-              title: Todo1 sample
-              content: Todo content1 sample
-              userId: 1
-              createdAt: "2021-10-28T08:38:14.237Z"
-              updatedAt: "2021-10-28T08:38:14.237Z"
-            - id: 2
-              title: Todo2 sample
-              content: Todo content2 sample
-              userId: 1
-              createdAt: "2021-10-28T08:38:14.237Z"
-              updatedAt: "2021-10-28T08:38:14.237Z"
-            - id: 3
-              title: Todo3 sample
-              content: Todo content3 sample
-              userId: 1
-              createdAt: "2021-10-28T08:38:14.237Z"
-              updatedAt: "2021-10-28T08:38:14.237Z"
-          type: array
-          items:
-            $ref: "#/components/schemas/TodoEntity"
-      required:
-        - todos
-    UpdateTodoDto:
-      type: object
-      properties:
-        title:
-          type: string
-          example: Todo4 update
-          minLength: 2
-          maxLength: 25
-        content:
-          type: string
-          example: Todo content4 sample update
-      required:
-        - title
-        - content
+          example: password
     SignInUserDto:
       type: object
       properties:
@@ -303,6 +102,16 @@ components:
           type: string
           example: user1@test.com
           maxLength: 255
+        email_verified_at:
+          format: date-time
+          type: string
+          example: "2022-10-28T08:38:14.237Z"
+        password:
+          type: string
+          example: password
+        remember_token:
+          type: string
+          example: remember_token
         createdAt:
           format: date-time
           type: string
@@ -315,39 +124,66 @@ components:
         - id
         - name
         - email
+        - password
         - createdAt
         - updatedAt
-    AuthResponseDto:
+    SignUpResponseDto:
       type: object
       properties:
-        user:
-          example:
-            id: 1
-            name: ユーザー1
-            email: user1@test.com
-            createdAt: "2022-10-28T08:38:14.237Z"
-            updatedAt: "2022-10-28T08:38:14.237Z"
-          allOf:
-            - $ref: "#/components/schemas/UserEntity"
-        accessToken:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+              example: ユーザー1
+            token:
+              type: string
+              example: 3|gp3F2vTrNwdY5AgZVdkPfk22xHErjwmGpRT93yEO0c026938
+        message:
           type: string
-          example: token
+          example: User registered successfully.
       required:
-        - user
-        - accessToken
-    SignUpUserDto:
+        - success
+        - data
+        - message
+    LoginResponseDto:
       type: object
       properties:
-        name:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: object
+          properties:
+            name:
+              type: string
+              example: ユーザー1
+            token:
+              type: string
+              example: 3|gp3F2vTrNwdY5AgZVdkPfk22xHErjwmGpRT93yEO0c026938
+        message:
           type: string
-          example: ユーザー1
-        email:
-          type: string
-          example: user1@test.com
-        password:
-          type: string
-          example: password
+          example: User login successfully.
       required:
-        - name
-        - email
-        - password
+        - success
+        - data
+        - message
+    LogoutResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          example: []
+        message:
+          type: string
+          example: User logout successfully.
+      required:
+        - success
+        - data
+        - message
