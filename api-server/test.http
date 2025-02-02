@@ -1,0 +1,47 @@
+@baseUrl = http://127.0.0.1/api
+@email = test@example.com
+@password = password
+
+# @name register
+POST {{baseUrl}}/register/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "test",
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}"
+}
+
+###
+
+# @name login
+POST {{baseUrl}}/login/
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+
+@tokenFromRegister = {{register.response.body.data.token}}
+# @name logout
+POST {{baseUrl}}/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenFromRegister}}
+
+###
+
+# @name logout
+@tokenFromLogin = {{login.response.body.data.token}}
+
+POST {{baseUrl}}/logout/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{tokenFromLogin}}
+
