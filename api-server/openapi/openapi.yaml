@@ -1,8 +1,21 @@
 openapi: 3.0.0
+info:
+  title: API description
+  description: ""
+  version: "1.0"
+  contact: {}
+tags:
+  - name: Auth
+    description: 認証関連
+  - name: Todo
+    description: タスク関連
+servers:
+  - url: http://localhost
 paths:
   /api/register:
     post:
       operationId: AuthController_register
+      tags: [Auth]
       parameters: []
       requestBody:
         required: true
@@ -20,6 +33,7 @@ paths:
   /api/login:
     post:
       operationId: LoginController_login
+      tags: [Auth]
       parameters: []
       requestBody:
         required: true
@@ -37,6 +51,7 @@ paths:
   /api/logout:
     post:
       operationId: LoginController_logout
+      tags: [Auth]
       parameters: []
       responses:
         "200":
@@ -45,14 +60,30 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/LogoutResponseDto"
-info:
-  title: API description
-  description: ""
-  version: "1.0"
-  contact: {}
-tags: []
-servers:
-  - url: /
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
+  /api/todos:
+    get:
+      operationId: TodoController_index
+      tags: [Todo]
+      parameters: []
+      responses:
+        "200":
+          description: タスク一覧取得完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodoListResponseDto"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
 components:
   securitySchemes:
     bearer:
@@ -186,4 +217,78 @@ components:
       required:
         - success
         - data
+        - message
+    TodoEntity:
+      type: object
+      properties:
+        id:
+          type: number
+          example: 1
+        user_id:
+          type: number
+          example: 1
+        title:
+          type: string
+          example: タスク1
+        content:
+          type: string
+          example: タスクの内容
+        is_completed:
+          type: boolean
+          example: false
+        is_deleted:
+          type: boolean
+          example: false
+        created_at:
+          format: date-time
+          type: string
+          example: "2022-10-28T08:38:14.237Z"
+        updated_at:
+          format: date-time
+          type: string
+          example: "2022-10-28T08:38:14.237Z"
+      required:
+        - id
+        - user_id
+        - title
+        - content
+        - is_completed
+        - is_deleted
+    TodoListResponseDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        data:
+          type: array
+          example:
+            [
+              {
+                "id": 1,
+                "user_id": 1,
+                "title": "タスク1",
+                "content": "タスクの内容",
+                "is_completed": false,
+                "is_deleted": false,
+              },
+            ]
+        message:
+          type: string
+          example: Todos fetched successfully.
+      required:
+        - success
+        - data
+        - message
+    ErrorDto:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        message:
+          type: string
+          example: Error message
+      required:
+        - success
         - message
