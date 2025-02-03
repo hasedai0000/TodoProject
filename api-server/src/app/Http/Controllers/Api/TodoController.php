@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\BaseController as BaseController;
+use App\Http\Requests\Todo\TodoStoreRequest;
 use App\Services\TodoService;
 use Illuminate\Http\Request;
 
@@ -22,5 +23,16 @@ class TodoController extends BaseController
     $success['todos'] = $todos;
 
     return $this->sendResponse($success, 'Todos fetched successfully.');
+  }
+
+  public function store(TodoStoreRequest $request)
+  {
+    $todo = $this->service->storeTodo(
+      $request->user_id,
+      $request->title,
+      $request->content,
+    );
+    $success['todo'] = $todo;
+    return $this->sendResponse($success, 'Todo created successfully.');
   }
 }

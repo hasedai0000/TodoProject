@@ -84,6 +84,29 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorDto"
+    post:
+      operationId: TodoController_store
+      tags: [Todo]
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TodoStoreRequestDto"
+      responses:
+        "200":
+          description: タスク作成完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodoEntity"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
 components:
   securitySchemes:
     bearer:
@@ -280,6 +303,22 @@ components:
         - success
         - data
         - message
+    TodoStoreRequestDto:
+      type: object
+      properties:
+        user_id:
+          type: number
+          example: 1
+        title:
+          type: string
+          example: タスク1
+        content:
+          type: string
+          example: タスクの内容
+      required:
+        - user_id
+        - title
+        - content
     ErrorDto:
       type: object
       properties:

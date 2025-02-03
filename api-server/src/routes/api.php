@@ -12,4 +12,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
+    Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
 });

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Domain\Entity\Todo as EntityTodo;
 use App\Domain\Interfaces\TodoRepositoryInterface;
 
 class TodoService
@@ -28,5 +29,11 @@ class TodoService
       ];
     }, $todos);
     return $todos;
+  }
+
+  public function storeTodo(int $userId, string $title, string $content): EntityTodo
+  {
+    $todo = new EntityTodo(null, $userId, $title, $content, false, false);
+    return $this->repository->store($todo);
   }
 }

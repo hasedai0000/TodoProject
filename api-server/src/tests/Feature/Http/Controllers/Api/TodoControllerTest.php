@@ -52,10 +52,10 @@ class TodoControllerTest extends TestCase
     ]);
   }
 
-  private function assertSuccessResponse(array $response, array $todos, string $message): void
+  private function assertSuccessResponse(array $response, array $data, string $message): void
   {
     $this->assertTrue($response['success']);
-    $this->assertEquals($todos, $response['data']['todos']);
+    $this->assertEquals($data, $response['data']);
     $this->assertEquals($message, $response['message']);
   }
 
@@ -81,8 +81,42 @@ class TodoControllerTest extends TestCase
 
     $this->assertSuccessResponse(
       $response->json(),
-      [self::TEST_TODO],
+      ['todos' => [self::TEST_TODO]],
       'Todos fetched successfully.'
+    );
+  }
+
+  #[Test]
+  public function testStoreSuccess(): void
+  {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->postJson('/api/todos', [
+        'user_id' => $this->user->id,
+        'title' => self::TEST_TODO['title'],
+        'content' => self::TEST_TODO['content'],
+      ])
+      ->assertStatus(200)
+      ->assertJsonStructure([
+        'success',
+        'data' => ['todo'],
+        'message'
+      ]);
+
+    $responseData = $response->json()['data']['todo'];
+
+    $this->assertSuccessResponse(
+      $response->json(),
+      ['todo' => [
+        'id' => $responseData['id'],
+        'user_id' => $this->user->id,
+        'title' => self::TEST_TODO['title'],
+        'content' => self::TEST_TODO['content'],
+        'is_completed' => self::TEST_TODO['is_completed'],
+        'is_deleted' => self::TEST_TODO['is_deleted'],
+      ]],
+      'Todo created successfully.'
     );
   }
 }
