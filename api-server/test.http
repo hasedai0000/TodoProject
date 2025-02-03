@@ -46,3 +46,17 @@ GET {{baseUrl}}/todos/
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
+
+### loginで取得したtokenを使用してTodoを作成
+# @name create_todo
+POST {{baseUrl}}/todos/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}
+
+{
+  "user_id": 11,
+  "title": "test",
+  "content": "test"
+}
+

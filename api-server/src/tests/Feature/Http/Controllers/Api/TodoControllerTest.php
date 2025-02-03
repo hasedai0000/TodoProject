@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TodoControllerTest extends TestCase
 {
@@ -52,10 +53,10 @@ class TodoControllerTest extends TestCase
     ]);
   }
 
-  private function assertSuccessResponse(array $response, array $todos, string $message): void
+  private function assertSuccessResponse(array $response, array $data, string $message): void
   {
     $this->assertTrue($response['success']);
-    $this->assertEquals($todos, $response['data']['todos']);
+    $this->assertEquals($data, $response['data']);
     $this->assertEquals($message, $response['message']);
   }
 
@@ -81,8 +82,113 @@ class TodoControllerTest extends TestCase
 
     $this->assertSuccessResponse(
       $response->json(),
-      [self::TEST_TODO],
+      ['todos' => [self::TEST_TODO]],
       'Todos fetched successfully.'
     );
+  }
+
+  #[Test]
+  public function testStoreSuccess(): void
+  {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->postJson('/api/todos', [
+        'user_id' => $this->user->id,
+        'title' => self::TEST_TODO['title'],
+        'content' => self::TEST_TODO['content'],
+      ])
+      ->assertStatus(200)
+      ->assertJsonStructure([
+        'success',
+        'data' => ['todo'],
+        'message'
+      ]);
+
+    $responseData = $response->json()['data']['todo'];
+
+    $this->assertSuccessResponse(
+      $response->json(),
+      ['todo' => [
+        'id' => $responseData['id'],
+        'user_id' => $this->user->id,
+        'title' => self::TEST_TODO['title'],
+        'content' => self::TEST_TODO['content'],
+        'is_completed' => self::TEST_TODO['is_completed'],
+        'is_deleted' => self::TEST_TODO['is_deleted'],
+      ]],
+      'Todo created successfully.'
+    );
+  }
+
+  #[Test]
+  #[DataProvider('validationDataProvider')]
+  public function testStoreValidation(
+    array $params,
+    array $expectedErrors,
+    string $expectedMessage
+  ): void {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->postJson('/api/todos', $params)
+      ->assertStatus(422)
+      ->assertJson([
+        'message' => $expectedMessage,
+        'errors' => $expectedErrors,
+      ]);
+  }
+
+  public static function validationDataProvider(): array
+  {
+    return [
+      'required' => [
+        'params' => [
+          'user_id' => '',
+          'title' => '',
+          'content' => '',
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The user id field is required.'],
+          'title' => ['The title field is required.'],
+          'content' => ['The content field is required.'],
+        ],
+        'expectedMessage' => 'The user id field is required. (and 2 more errors)',
+      ],
+      'integer' => [
+        'params' => [
+          'user_id' => 'test',
+          'title' => self::TEST_TODO['title'],
+          'content' => self::TEST_TODO['content'],
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The user id field must be an integer.'],
+        ],
+        'expectedMessage' => 'The user id field must be an integer.',
+      ],
+      'exists' => [
+        'params' => [
+          'user_id' => '999',
+          'title' => self::TEST_TODO['title'],
+          'content' => self::TEST_TODO['content'],
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The selected user id is invalid.'],
+        ],
+        'expectedMessage' => 'The selected user id is invalid.',
+      ],
+      'string' => [
+        'params' => [
+          'user_id' => 1,
+          'title' => 123,
+          'content' => 123,
+        ],
+        'expectedErrors' => [
+          'title' => ['The title field must be a string.'],
+          'content' => ['The content field must be a string.'],
+        ],
+        'expectedMessage' => 'The title field must be a string. (and 1 more error)',
+      ],
+    ];
   }
 }
