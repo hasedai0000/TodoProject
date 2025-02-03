@@ -8,6 +8,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Tests\TestCase;
 use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TodoControllerTest extends TestCase
 {
@@ -118,5 +119,76 @@ class TodoControllerTest extends TestCase
       ]],
       'Todo created successfully.'
     );
+  }
+
+  #[Test]
+  #[DataProvider('validationDataProvider')]
+  public function testStoreValidation(
+    array $params,
+    array $expectedErrors,
+    string $expectedMessage
+  ): void {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->postJson('/api/todos', $params)
+      ->assertStatus(422)
+      ->assertJson([
+        'message' => $expectedMessage,
+        'errors' => $expectedErrors,
+      ]);
+  }
+
+  public static function validationDataProvider(): array
+  {
+    return [
+      'required' => [
+        'params' => [
+          'user_id' => '',
+          'title' => '',
+          'content' => '',
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The user id field is required.'],
+          'title' => ['The title field is required.'],
+          'content' => ['The content field is required.'],
+        ],
+        'expectedMessage' => 'The user id field is required. (and 2 more errors)',
+      ],
+      'integer' => [
+        'params' => [
+          'user_id' => 'test',
+          'title' => self::TEST_TODO['title'],
+          'content' => self::TEST_TODO['content'],
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The user id field must be an integer.'],
+        ],
+        'expectedMessage' => 'The user id field must be an integer.',
+      ],
+      'exists' => [
+        'params' => [
+          'user_id' => '999',
+          'title' => self::TEST_TODO['title'],
+          'content' => self::TEST_TODO['content'],
+        ],
+        'expectedErrors' => [
+          'user_id' => ['The selected user id is invalid.'],
+        ],
+        'expectedMessage' => 'The selected user id is invalid.',
+      ],
+      'string' => [
+        'params' => [
+          'user_id' => 1,
+          'title' => 123,
+          'content' => 123,
+        ],
+        'expectedErrors' => [
+          'title' => ['The title field must be a string.'],
+          'content' => ['The content field must be a string.'],
+        ],
+        'expectedMessage' => 'The title field must be a string. (and 1 more error)',
+      ],
+    ];
   }
 }
