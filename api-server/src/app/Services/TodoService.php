@@ -50,4 +50,12 @@ class TodoService
       return $this->repository->update($todo);
     }
   }
+
+  public function deleteTodo(int $id): EntityTodo
+  {
+    $todo = $this->repository->findById($id);
+    if ($todo !== null) {
+      return $this->repository->delete($todo);
+    }
+  }
 }
