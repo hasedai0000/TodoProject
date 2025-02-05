@@ -43,6 +43,15 @@ class TodoServiceTest extends TestCase
     $this->mock(
       TodoRepositoryInterface::class,
       function (MockInterface $mock) {
+        $mock->shouldReceive('findById')->andReturn(new EntityTodo(
+          self::TEST_TODO['id'],
+          self::TEST_USER['id'],
+          self::TEST_TODO['title'],
+          self::TEST_TODO['content'],
+          self::TEST_TODO['is_completed'],
+          self::TEST_TODO['is_deleted'],
+        ));
+
         $mock->shouldReceive('findAll')->andReturn([
           [
             'id' => self::TEST_TODO['id'],
@@ -61,6 +70,15 @@ class TodoServiceTest extends TestCase
           self::TEST_TODO['content'],
           self::TEST_TODO['is_completed'],
           self::TEST_TODO['is_deleted']
+        ));
+
+        $mock->shouldReceive('update')->andReturn(new EntityTodo(
+          self::TEST_TODO['id'],
+          self::TEST_USER['id'],
+          self::TEST_TODO['title'],
+          self::TEST_TODO['content'],
+          self::TEST_TODO['is_completed'],
+          self::TEST_TODO['is_deleted'],
         ));
       }
     );
@@ -83,6 +101,7 @@ class TodoServiceTest extends TestCase
       'title' => self::TEST_TODO['title'],
       'content' => self::TEST_TODO['content'],
       'is_completed' => self::TEST_TODO['is_completed'],
+      'is_deleted' => self::TEST_TODO['is_deleted'],
     ]);
 
     $expected = [
@@ -120,5 +139,37 @@ class TodoServiceTest extends TestCase
     );
 
     $this->assertEquals($expected, $todo);
+  }
+
+  #[Test]
+  public function testUpdateTodo(): void
+  {
+    $user = User::factory()->create([
+      'id' => self::TEST_USER['id'],
+      'name' => self::TEST_USER['name'],
+      'email' => self::TEST_USER['email'],
+      'password' => Hash::make(self::TEST_USER['password']),
+    ]);
+
+    $todo = Todo::factory()->create([
+      'user_id' => $user->id,
+      'title' => self::TEST_TODO['title'],
+      'content' => self::TEST_TODO['content'],
+      'is_completed' => self::TEST_TODO['is_completed'],
+      'is_deleted' => self::TEST_TODO['is_deleted'],
+    ]);
+
+    $updatedTodo = $this->service->updateTodo($todo->id, self::TEST_TODO['title'], self::TEST_TODO['content'], self::TEST_TODO['is_completed']);
+
+    $expected = new EntityTodo(
+      self::TEST_TODO['id'],
+      $user->id,
+      self::TEST_TODO['title'],
+      self::TEST_TODO['content'],
+      self::TEST_TODO['is_completed'],
+      self::TEST_TODO['is_deleted'],
+    );
+
+    $this->assertEquals($expected, $updatedTodo);
   }
 }

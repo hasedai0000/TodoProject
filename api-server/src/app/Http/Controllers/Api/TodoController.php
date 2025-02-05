@@ -37,13 +37,18 @@ class TodoController extends BaseController
     return $this->sendResponse($success, 'Todo created successfully.');
   }
 
-  public function update(TodoUpdateRequest $request)
+  public function update(TodoUpdateRequest $request, int $id)
   {
+    $params = $request->only([
+      'title',
+      'content',
+      'is_completed',
+    ]);
     $todo = $this->service->updateTodo(
-      $request->id,
-      $request->title,
-      $request->content,
-      $request->is_completed,
+      $id,
+      $params['title'],
+      $params['content'],
+      $params['is_completed'],
     );
     $success['todo'] = $todo;
     return $this->sendResponse($success, 'Todo updated successfully.');

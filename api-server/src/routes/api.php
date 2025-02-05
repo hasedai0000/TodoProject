@@ -14,6 +14,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::controller(TodoController::class)->group(function () {
         Route::get('/todos', 'index')->name('todos.index');
         Route::post('/todos', 'store')->name('todos.store');
-        Route::put('/todos/{id}', 'update')->name('todos.update');
+        Route::put('/todos/{id}', 'update')->name('todos.update')->where('id', '[0-9]+');
     });
 });

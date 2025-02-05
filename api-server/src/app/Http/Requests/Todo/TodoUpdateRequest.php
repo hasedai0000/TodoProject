@@ -24,7 +24,6 @@ class TodoUpdateRequest extends FormRequest
   public function rules(): array
   {
     return [
-      'id' => ['required', 'integer', 'exists:todos,id'],
       'title' => ['required', 'string'],
       'content' => ['required', 'string'],
       'is_completed' => ['required', 'boolean'],
