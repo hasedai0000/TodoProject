@@ -23,7 +23,6 @@ class TodoFactory extends Factory
             'title' => fake()->sentence(),
             'content' => fake()->paragraph(),
             'is_completed' => fake()->boolean(),
-            'is_deleted' => fake()->boolean(),
         ];
     }
 }

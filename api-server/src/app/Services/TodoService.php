@@ -25,7 +25,6 @@ class TodoService
         'title' => $todo['title'],
         'content' => $todo['content'],
         'is_completed' => $todo['is_completed'],
-        'is_deleted' => $todo['is_deleted'],
       ];
     }, $todos);
     return $todos;

@@ -4,15 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Todo extends Model
 {
     /** @use HasFactory<\Database\Factories\TodoFactory> */
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'todos';
 
     protected $primaryKey = 'id';
+
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +27,6 @@ class Todo extends Model
         'title',
         'content',
         'is_completed',
-        'is_deleted',
     ];
 
     /**
@@ -39,7 +41,6 @@ class Todo extends Model
             'title' => 'string',
             'content' => 'string',
             'is_completed' => 'boolean',
-            'is_deleted' => 'boolean',
         ];
     }
 }
