@@ -36,4 +36,19 @@ class TodoService
     $todo = new EntityTodo(null, $userId, $title, $content, false, false);
     return $this->repository->store($todo);
   }
+
+  public function updateTodo(
+    int $id,
+    string $title,
+    string $content,
+    bool $isCompleted
+  ): EntityTodo {
+    $todo = $this->repository->findById($id);
+    if ($todo !== null) {
+      $todo->setTitle($title);
+      $todo->setContent($content);
+      $todo->setIsCompleted($isCompleted);
+      return $this->repository->update($todo);
+    }
+  }
 }

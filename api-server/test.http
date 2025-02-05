@@ -55,8 +55,22 @@ Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
 
 {
-  "user_id": 11,
-  "title": "test",
-  "content": "test"
+  "user_id": 12,
+  "title": "こんにちは",
+  "content": "挨拶です。"
 }
 
+### loginで取得したtokenを使用してTodoを更新
+# @name update_todo
+PUT {{baseUrl}}/todos/3/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}
+
+{
+  "id": 7,
+  "user_id": 12,
+  "title": "こんにちははははは",
+  "content": "挨拶です。",
+  "is_completed": false
+}

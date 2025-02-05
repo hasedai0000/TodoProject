@@ -11,6 +11,9 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    Route::get('/todos', [TodoController::class, 'index'])->name('todos.index');
-    Route::post('/todos', [TodoController::class, 'store'])->name('todos.store');
+    Route::controller(TodoController::class)->group(function () {
+        Route::get('/todos', 'index')->name('todos.index');
+        Route::post('/todos', 'store')->name('todos.store');
+        Route::put('/todos/{id}', 'update')->name('todos.update');
+    });
 });
