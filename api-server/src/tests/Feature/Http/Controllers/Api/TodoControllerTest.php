@@ -191,4 +191,38 @@ class TodoControllerTest extends TestCase
       ],
     ];
   }
+
+  #[Test]
+  public function testUpdateSuccess(): void
+  {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->putJson('/api/todos/' . $this->todo->id, [
+        'title' => 'updatedTitle',
+        'content' => 'updatedContent',
+        'is_completed' => false,
+      ])
+      ->assertStatus(200)
+      ->assertJsonStructure([
+        'success',
+        'data' => ['todo'],
+        'message'
+      ]);
+
+    $responseData = $response->json()['data']['todo'];
+
+    $this->assertSuccessResponse(
+      $response->json(),
+      ['todo' => [
+        'id' => $responseData['id'],
+        'user_id' => $this->user->id,
+        'title' => 'updatedTitle',
+        'content' => 'updatedContent',
+        'is_completed' => self::TEST_TODO['is_completed'],
+        'is_deleted' => self::TEST_TODO['is_deleted'],
+      ]],
+      'Todo updated successfully.'
+    );
+  }
 }
