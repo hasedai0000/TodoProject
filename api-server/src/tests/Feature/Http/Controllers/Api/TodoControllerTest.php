@@ -27,7 +27,6 @@ class TodoControllerTest extends TestCase
     'title' => 'testTitle',
     'content' => 'testContent',
     'is_completed' => false,
-    'is_deleted' => false,
   ];
 
   private User $user;
@@ -49,7 +48,6 @@ class TodoControllerTest extends TestCase
       'title' => self::TEST_TODO['title'],
       'content' => self::TEST_TODO['content'],
       'is_completed' => self::TEST_TODO['is_completed'],
-      'is_deleted' => self::TEST_TODO['is_deleted'],
     ]);
   }
 
@@ -115,14 +113,13 @@ class TodoControllerTest extends TestCase
         'title' => self::TEST_TODO['title'],
         'content' => self::TEST_TODO['content'],
         'is_completed' => self::TEST_TODO['is_completed'],
-        'is_deleted' => self::TEST_TODO['is_deleted'],
       ]],
       'Todo created successfully.'
     );
   }
 
   #[Test]
-  #[DataProvider('validationDataProvider')]
+  #[DataProvider('storeValidationDataProvider')]
   public function testStoreValidation(
     array $params,
     array $expectedErrors,
@@ -139,7 +136,7 @@ class TodoControllerTest extends TestCase
       ]);
   }
 
-  public static function validationDataProvider(): array
+  public static function storeValidationDataProvider(): array
   {
     return [
       'required' => [
@@ -220,9 +217,89 @@ class TodoControllerTest extends TestCase
         'title' => 'updatedTitle',
         'content' => 'updatedContent',
         'is_completed' => self::TEST_TODO['is_completed'],
-        'is_deleted' => self::TEST_TODO['is_deleted'],
       ]],
       'Todo updated successfully.'
+    );
+  }
+
+  #[Test]
+  #[DataProvider('updateValidationDataProvider')]
+  public function testUpdateValidation(
+    array $params,
+    array $expectedErrors,
+    string $expectedMessage
+  ): void {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->putJson('/api/todos/' . $this->todo->id, $params)
+      ->assertStatus(422)
+      ->assertJson([
+        'message' => $expectedMessage,
+        'errors' => $expectedErrors,
+      ]);
+  }
+
+  public static function updateValidationDataProvider(): array
+  {
+    return [
+      'required' => [
+        'params' => [
+          'title' => '',
+          'content' => '',
+          'is_completed' => '',
+        ],
+        'expectedErrors' => [
+          'title' => ['The title field is required.'],
+          'content' => ['The content field is required.'],
+          'is_completed' => ['The is completed field is required.'],
+        ],
+        'expectedMessage' => 'The title field is required. (and 2 more errors)',
+      ],
+      'string' => [
+        'params' => [
+          'title' => 123,
+          'content' => 123,
+          'is_completed' => true,
+        ],
+        'expectedErrors' => [
+          'title' => ['The title field must be a string.'],
+          'content' => ['The content field must be a string.'],
+        ],
+        'expectedMessage' => 'The title field must be a string. (and 1 more error)',
+      ],
+      'boolean' => [
+        'params' => [
+          'title' => 'testTitle',
+          'content' => 'testContent',
+          'is_completed' => 'true',
+        ],
+        'expectedErrors' => [
+          'is_completed' => ['The is completed field must be true or false.'],
+        ],
+        'expectedMessage' => 'The is completed field must be true or false.',
+      ],
+    ];
+  }
+
+  #[Test]
+  public function testDeleteSuccess(): void
+  {
+    $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+      ->deleteJson('/api/todos/' . $this->todo->id)
+      ->assertStatus(200)
+      ->assertJsonStructure([
+        'success',
+        'data' => [],
+        'message'
+      ]);
+
+    $this->assertSuccessResponse(
+      $response->json(),
+      [],
+      'Todo deleted successfully.'
     );
   }
 }
