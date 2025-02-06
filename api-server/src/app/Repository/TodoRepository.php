@@ -25,7 +25,6 @@ class TodoRepository implements TodoRepositoryInterface
       $eloquentTodo->title,
       $eloquentTodo->content,
       $eloquentTodo->is_completed,
-      $eloquentTodo->is_deleted
     );
   }
 
@@ -36,7 +35,6 @@ class TodoRepository implements TodoRepositoryInterface
       'title' => $todo->getTitle(),
       'content' => $todo->getContent(),
       'is_completed' => $todo->getIsCompleted(),
-      'is_deleted' => $todo->getIsDeleted(),
     ]);
 
     return new EntityTodo(
@@ -45,7 +43,6 @@ class TodoRepository implements TodoRepositoryInterface
       $eloquentTodo->title,
       $eloquentTodo->content,
       $eloquentTodo->is_completed,
-      $eloquentTodo->is_deleted
     );
   }
 
@@ -65,7 +62,22 @@ class TodoRepository implements TodoRepositoryInterface
       $eloquentTodo->title,
       $eloquentTodo->content,
       $eloquentTodo->is_completed,
-      $eloquentTodo->is_deleted
+    );
+  }
+
+  public function delete(EntityTodo $todo): EntityTodo
+  {
+    $eloquentTodo = Todo::find($todo->getId());
+    if ($eloquentTodo !== null) {
+      $eloquentTodo->delete();
+    }
+
+    return new EntityTodo(
+      $eloquentTodo->id,
+      $eloquentTodo->user_id,
+      $eloquentTodo->title,
+      $eloquentTodo->content,
+      $eloquentTodo->is_completed,
     );
   }
 }

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('content')->nullable();
             $table->boolean('is_completed')->default(false);
-            $table->boolean('is_deleted')->default(false);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

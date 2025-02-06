@@ -9,7 +9,6 @@ class Todo implements \JsonSerializable
   protected $title;
   protected $content;
   protected $isCompleted;
-  protected $isDeleted;
 
   public function __construct(
     ?int $id,
@@ -17,14 +16,12 @@ class Todo implements \JsonSerializable
     ?string $title,
     ?string $content,
     ?bool $isCompleted,
-    ?bool $isDeleted
   ) {
     $this->id = $id;
     $this->userId = $userId;
     $this->title = $title;
     $this->content = $content;
     $this->isCompleted = $isCompleted;
-    $this->isDeleted = $isDeleted;
   }
 
   public function getId(): ?int
@@ -52,11 +49,6 @@ class Todo implements \JsonSerializable
     return $this->isCompleted;
   }
 
-  public function getIsDeleted(): ?bool
-  {
-    return $this->isDeleted;
-  }
-
   public function setTitle(string $title): void
   {
     $this->title = $title;
@@ -72,11 +64,6 @@ class Todo implements \JsonSerializable
     $this->isCompleted = $isCompleted;
   }
 
-  public function setIsDeleted(bool $isDeleted): void
-  {
-    $this->isDeleted = $isDeleted;
-  }
-
   public function jsonSerialize(): array
   {
     return [
@@ -85,7 +72,6 @@ class Todo implements \JsonSerializable
       'title' => $this->getTitle(),
       'content' => $this->getContent(),
       'is_completed' => $this->getIsCompleted(),
-      'is_deleted' => $this->getIsDeleted(),
     ];
   }
 }

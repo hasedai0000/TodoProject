@@ -19,7 +19,6 @@ class TodoSeeder extends Seeder
             'title' => 'test1',
             'content' => 'test1content',
             'is_completed' => false,
-            'is_deleted' => false,
         ]);
     }
 }

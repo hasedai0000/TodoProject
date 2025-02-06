@@ -62,15 +62,20 @@ Authorization: Bearer {{login.response.body.data.token}}
 
 ### loginで取得したtokenを使用してTodoを更新
 # @name update_todo
-PUT {{baseUrl}}/todos/3/
+PUT {{baseUrl}}/todos/4/
 Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
 
 {
-  "id": 7,
-  "user_id": 12,
   "title": "こんにちははははは",
   "content": "挨拶です。",
   "is_completed": false
 }
+
+### loginで取得したtokenを使用してTodoを削除
+# @name delete_todo
+DELETE {{baseUrl}}/todos/6/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}

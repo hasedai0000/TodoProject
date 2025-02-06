@@ -25,7 +25,6 @@ class TodoService
         'title' => $todo['title'],
         'content' => $todo['content'],
         'is_completed' => $todo['is_completed'],
-        'is_deleted' => $todo['is_deleted'],
       ];
     }, $todos);
     return $todos;
@@ -49,6 +48,14 @@ class TodoService
       $todo->setContent($content);
       $todo->setIsCompleted($isCompleted);
       return $this->repository->update($todo);
+    }
+  }
+
+  public function deleteTodo(int $id): EntityTodo
+  {
+    $todo = $this->repository->findById($id);
+    if ($todo !== null) {
+      return $this->repository->delete($todo);
     }
   }
 }

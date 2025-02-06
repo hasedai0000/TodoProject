@@ -33,7 +33,6 @@ class TodoServiceTest extends TestCase
     'title' => 'testTitle',
     'content' => 'testContent',
     'is_completed' => false,
-    'is_deleted' => false,
   ];
 
   protected function setUp(): void
@@ -49,7 +48,6 @@ class TodoServiceTest extends TestCase
           self::TEST_TODO['title'],
           self::TEST_TODO['content'],
           self::TEST_TODO['is_completed'],
-          self::TEST_TODO['is_deleted'],
         ));
 
         $mock->shouldReceive('findAll')->andReturn([
@@ -59,7 +57,6 @@ class TodoServiceTest extends TestCase
             'title' => self::TEST_TODO['title'],
             'content' => self::TEST_TODO['content'],
             'is_completed' => self::TEST_TODO['is_completed'],
-            'is_deleted' => self::TEST_TODO['is_deleted'],
           ]
         ]);
 
@@ -69,7 +66,6 @@ class TodoServiceTest extends TestCase
           self::TEST_TODO['title'],
           self::TEST_TODO['content'],
           self::TEST_TODO['is_completed'],
-          self::TEST_TODO['is_deleted']
         ));
 
         $mock->shouldReceive('update')->andReturn(new EntityTodo(
@@ -78,7 +74,14 @@ class TodoServiceTest extends TestCase
           self::TEST_TODO['title'],
           self::TEST_TODO['content'],
           self::TEST_TODO['is_completed'],
-          self::TEST_TODO['is_deleted'],
+        ));
+
+        $mock->shouldReceive('delete')->andReturn(new EntityTodo(
+          self::TEST_TODO['id'],
+          self::TEST_USER['id'],
+          self::TEST_TODO['title'],
+          self::TEST_TODO['content'],
+          self::TEST_TODO['is_completed'],
         ));
       }
     );
@@ -101,7 +104,6 @@ class TodoServiceTest extends TestCase
       'title' => self::TEST_TODO['title'],
       'content' => self::TEST_TODO['content'],
       'is_completed' => self::TEST_TODO['is_completed'],
-      'is_deleted' => self::TEST_TODO['is_deleted'],
     ]);
 
     $expected = [
@@ -110,7 +112,6 @@ class TodoServiceTest extends TestCase
       'title' => $todo->title,
       'content' => $todo->content,
       'is_completed' => $todo->is_completed,
-      'is_deleted' => $todo->is_deleted,
     ];
 
     $todos = $this->service->getTodos();
@@ -135,7 +136,6 @@ class TodoServiceTest extends TestCase
       self::TEST_TODO['title'],
       self::TEST_TODO['content'],
       self::TEST_TODO['is_completed'],
-      self::TEST_TODO['is_deleted']
     );
 
     $this->assertEquals($expected, $todo);
@@ -156,7 +156,6 @@ class TodoServiceTest extends TestCase
       'title' => self::TEST_TODO['title'],
       'content' => self::TEST_TODO['content'],
       'is_completed' => self::TEST_TODO['is_completed'],
-      'is_deleted' => self::TEST_TODO['is_deleted'],
     ]);
 
     $updatedTodo = $this->service->updateTodo($todo->id, self::TEST_TODO['title'], self::TEST_TODO['content'], self::TEST_TODO['is_completed']);
@@ -167,9 +166,38 @@ class TodoServiceTest extends TestCase
       self::TEST_TODO['title'],
       self::TEST_TODO['content'],
       self::TEST_TODO['is_completed'],
-      self::TEST_TODO['is_deleted'],
     );
 
     $this->assertEquals($expected, $updatedTodo);
+  }
+
+  #[Test]
+  public function testDeleteTodo(): void
+  {
+    $user = User::factory()->create([
+      'id' => self::TEST_USER['id'],
+      'name' => self::TEST_USER['name'],
+      'email' => self::TEST_USER['email'],
+      'password' => Hash::make(self::TEST_USER['password']),
+    ]);
+
+    $todo = Todo::factory()->create([
+      'user_id' => $user->id,
+      'title' => self::TEST_TODO['title'],
+      'content' => self::TEST_TODO['content'],
+      'is_completed' => self::TEST_TODO['is_completed'],
+    ]);
+
+    $deletedTodo = $this->service->deleteTodo($todo->id);
+
+    $expected = new EntityTodo(
+      self::TEST_TODO['id'],
+      $user->id,
+      self::TEST_TODO['title'],
+      self::TEST_TODO['content'],
+      self::TEST_TODO['is_completed'],
+    );
+
+    $this->assertEquals($expected, $deletedTodo);
   }
 }

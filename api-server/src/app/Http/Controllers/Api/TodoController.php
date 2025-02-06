@@ -53,4 +53,10 @@ class TodoController extends BaseController
     $success['todo'] = $todo;
     return $this->sendResponse($success, 'Todo updated successfully.');
   }
+
+  public function delete(int $id)
+  {
+    $this->service->deleteTodo($id);
+    return $this->sendResponse([], 'Todo deleted successfully.');
+  }
 }
