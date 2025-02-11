@@ -2,12 +2,6 @@
 @email = test@example.com
 @password = password
 
-### サンプルAPI
-# @name sample
-GET {{baseUrl}}/users/
-Content-Type: application/json
-Accept: application/json
-
 ### 新規ユーザー登録
 # @name register
 POST {{baseUrl}}/register/

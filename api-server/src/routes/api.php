@@ -5,17 +5,6 @@ use App\Http\Controllers\Api\TodoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-// サンプルAPI
-Route::get('/users', function () {
-    return response()->json([
-        'message' => 'サンプルAPIです。',
-        'data' => [
-            'name' => 'サンプル',
-        ],
-    ]);
-});
-
 Route::post('register', [AuthController::class, 'register'])->name('register');
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
