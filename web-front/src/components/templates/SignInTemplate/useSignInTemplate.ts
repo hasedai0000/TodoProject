@@ -5,8 +5,10 @@
  */
 
 import { signInApi } from '@/apis/authApi';
+import { NAVIGATION_PATH } from '@/constants/navigation';
 import { EventType } from '@/interfaces/Event';
 import { UserType } from '@/interfaces/User';
+import { useRouter } from 'next/router';
 import { useCallback, useState } from 'react';
 
 type Props = {
@@ -30,6 +32,7 @@ type ActionsType = {
  * @returns
  */
 export const useSignInTemplate = ({ signIn }: Props) => {
+  const router = useRouter();
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
@@ -59,7 +62,8 @@ export const useSignInTemplate = ({ signIn }: Props) => {
         return;
       }
       if (res?.data) {
-        localStorage.setItem('access_token', res.data.accessToken);
+        localStorage.setItem('access_token', res.data.token);
+        router.push(NAVIGATION_PATH.TOP);
       }
     },
     [email, password]

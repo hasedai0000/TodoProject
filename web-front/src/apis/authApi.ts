@@ -11,13 +11,9 @@ import { AuthResponseType } from '@/interfaces/User';
 export const signInApi = async (email: string, password: string) => {
   try {
     const { data }: AxiosResponse<AuthResponseType> = await globalAxios.post('/login', { email, password });
-    const res: ResponseType = {
-      success: data.success,
-      data: {
-        accessToken: data.data.accessToken,
-        user: data.data.user,
-      },
-      message: data.message,
+    const res: ResponseType<AuthResponseType> = {
+      success: true,
+      data: data,
     };
     return res;
   } catch (error) {

@@ -2,9 +2,9 @@ import axios, { AxiosError } from 'axios';
 
 const BASE_API_URL = process.env.BASE_API_URL || 'http://localhost';
 
-export type ResponseType = {
+export type ResponseType<T = undefined> = {
   success: boolean;
-  data?: object;
+  data?: T;
   message?: string;
 };
 
