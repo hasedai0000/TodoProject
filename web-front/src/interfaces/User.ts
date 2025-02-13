@@ -7,6 +7,10 @@ export type UserType = {
 };
 
 export type AuthResponseType = {
-  token: string;
-  user: UserType;
+  success: boolean;
+  data: {
+    token: string;
+    user: UserType;
+  };
+  message: string;
 };

@@ -1,10 +1,10 @@
 /**
- * useSignInTemplate
+ * useSignUpTemplate
  *
- * @package components/templates/SignInTemplate
+ * @package components/templates/SignUpTemplate
  */
 
-import { signInApi } from '@/apis/authApi';
+import { signUpApi } from '@/apis/authApi';
 import { NAVIGATION_PATH } from '@/constants/navigation';
 import { EventType } from '@/interfaces/Event';
 import { UserType } from '@/interfaces/User';
@@ -16,25 +16,38 @@ type Props = {
 };
 
 type StatesType = {
+  name: string;
   email: string;
   password: string;
+  password_confirmation: string;
 };
 
 type ActionsType = {
+  handleChangeName: EventType['onChangeInput'];
   handleChangeEmail: EventType['onChangeInput'];
   handleChangePassword: EventType['onChangeInput'];
-  handleLogin: EventType['onSubmit'];
+  handleChangePasswordConfirmation: EventType['onChangeInput'];
+  handleSignUp: EventType['onSubmit'];
 };
 
 /**
- * useSignInTemplate
+ * useSignUpTemplate
  * @param param0
  * @returns
  */
-export const useSignInTemplate = ({ signIn }: Props) => {
+export const useSignUpTemplate = ({ signIn }: Props) => {
   const router = useRouter();
+  const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [password_confirmation, setPasswordConfirmation] = useState<string>('');
+
+  /**
+   * nameの更新処理
+   */
+  const handleChangeName: EventType['onChangeInput'] = useCallback((event) => {
+    setName(event.target.value);
+  }, []);
 
   /**
    * emailの更新処理
@@ -51,30 +64,41 @@ export const useSignInTemplate = ({ signIn }: Props) => {
   }, []);
 
   /**
-   * ログイン処理
+   * password_confirmationの更新処理
    */
-  const handleLogin: EventType['onSubmit'] = useCallback(
+  const handleChangePasswordConfirmation: EventType['onChangeInput'] = useCallback((event) => {
+    setPasswordConfirmation(event.target.value);
+  }, []);
+
+  /**
+   * 会員登録処理
+   */
+  const handleSignUp: EventType['onSubmit'] = useCallback(
     async (event) => {
       event.preventDefault();
-      const res = await signInApi(email, password);
+      const res = await signUpApi(name, email, password, password_confirmation);
       if (res?.data) {
         signIn(res.data.user);
         localStorage.setItem('access_token', res.data.token);
         router.push(NAVIGATION_PATH.TOP);
       }
     },
-    [email, password, router, signIn]
+    [name, email, password, password_confirmation, router, signIn]
   );
 
   const states: StatesType = {
+    name,
     email,
     password,
+    password_confirmation,
   };
 
   const actions: ActionsType = {
+    handleChangeName,
     handleChangeEmail,
     handleChangePassword,
-    handleLogin,
+    handleChangePasswordConfirmation,
+    handleSignUp,
   };
 
   return [states, actions] as const;
