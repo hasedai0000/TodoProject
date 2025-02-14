@@ -44,7 +44,7 @@ class AuthControllerTest extends TestCase
     private function assertSuccessResponse(array $response, string $name, string $message): void
     {
         $this->assertTrue($response['success']);
-        $this->assertEquals($name, $response['data']['name']);
+        $this->assertEquals($name, $response['data']['user']['name']);
         $this->assertMatchesRegularExpression('/^\d+\|[A-Za-z0-9]+$/', $response['data']['token']);
         $this->assertEquals($message, $response['message']);
     }
@@ -62,7 +62,7 @@ class AuthControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => ['name', 'token'],
+                'data' => ['user', 'token'],
                 'message'
             ]);
 
@@ -142,7 +142,7 @@ class AuthControllerTest extends TestCase
             ->assertStatus(200)
             ->assertJsonStructure([
                 'success',
-                'data' => ['name', 'token'],
+                'data' => ['user', 'token'],
                 'message'
             ]);
 

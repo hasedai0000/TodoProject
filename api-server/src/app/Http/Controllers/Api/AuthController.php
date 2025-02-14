@@ -23,7 +23,7 @@ class AuthController extends BaseController
     $input['password'] = bcrypt($input['password']);
     $user = User::create($input);
     $success['token'] =  $user->createToken('AccessToken')->plainTextToken;
-    $success['name'] =  $user->name;
+    $success['user'] =  $user;
 
     return $this->sendResponse($success, 'User register successfully.');
   }
@@ -42,7 +42,7 @@ class AuthController extends BaseController
       /** @var \App\Models\User $user **/
       $user = Auth::user();
       $success['token'] = $user->createToken('AccessToken')->plainTextToken;
-      $success['name'] = $user->name;
+      $success['user'] = $user;
 
       return $this->sendResponse($success, 'User login successfully.');
     } else {
