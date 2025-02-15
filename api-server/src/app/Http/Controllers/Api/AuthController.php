@@ -60,4 +60,19 @@ class AuthController extends BaseController
     $request->user()->currentAccessToken()->delete();
     return $this->sendResponse([], 'User logout successfully.');
   }
+
+  /**
+   * check authenticated user
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function authentication(Request $request)
+  {
+    if ($request->user() && Auth::check()) {
+      $user = Auth::user();
+      $success['user'] = $user;
+      return $this->sendResponse($success, 'User authenticated successfully.');
+    }
+    return $this->sendError('User is not authenticated.', ['error' => 'Not authenticated.']);
+  }
 }

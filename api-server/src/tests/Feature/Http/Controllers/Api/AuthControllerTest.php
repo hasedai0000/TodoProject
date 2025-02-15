@@ -49,6 +49,13 @@ class AuthControllerTest extends TestCase
         $this->assertEquals($message, $response['message']);
     }
 
+    private function assertSuccessAuthenticationResponse(array $response, string $name, string $message): void
+    {
+        $this->assertTrue($response['success']);
+        $this->assertEquals($name, $response['data']['user']['name']);
+        $this->assertEquals($message, $response['message']);
+    }
+
     private function assertErrorResponse(array $response, string $message): void
     {
         $this->assertFalse($response['success']);
@@ -185,5 +192,36 @@ class AuthControllerTest extends TestCase
         $this->postJson('/api/logout')
             ->assertStatus(401)
             ->assertJson(['message' => 'Unauthenticated.']);
+    }
+
+    #[Test]
+    public function testAuthenticationSuccess(): void
+    {
+        $token = $this->user->createToken('AccessToken')->plainTextToken;
+
+        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+            ->getJson('/api/authentication')
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                'success',
+                'data' => ['user'],
+                'message'
+            ]);
+
+        $this->assertSuccessAuthenticationResponse(
+            $response->json(),
+            self::TEST_USER['name'],
+            'User authenticated successfully.'
+        );
+    }
+
+    #[Test]
+    public function testAuthenticationUnauthorized(): void
+    {
+        $this->getJson('/api/authentication')
+            ->assertStatus(401)
+            ->assertJson([
+                'message' => 'Unauthenticated.',
+            ]);
     }
 }
