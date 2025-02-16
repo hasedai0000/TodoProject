@@ -256,9 +256,8 @@ components:
         data:
           type: object
           properties:
-            name:
-              type: string
-              example: ユーザー1
+            user:
+              $ref: "#/components/schemas/UserEntity"
             token:
               type: string
               example: 3|gp3F2vTrNwdY5AgZVdkPfk22xHErjwmGpRT93yEO0c026938
@@ -278,9 +277,8 @@ components:
         data:
           type: object
           properties:
-            name:
-              type: string
-              example: ユーザー1
+            user:
+              $ref: "#/components/schemas/UserEntity"
             token:
               type: string
               example: 3|gp3F2vTrNwdY5AgZVdkPfk22xHErjwmGpRT93yEO0c026938
