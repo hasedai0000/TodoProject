@@ -16,6 +16,7 @@ type ContextType = {
   user: UserType | undefined;
   isAuth: boolean;
   signIn: (user: UserType) => Promise<void>;
+  signOut: () => Promise<void>;
 };
 
 const AuthContext = createContext({} as ContextType);
@@ -27,9 +28,20 @@ const AuthContext = createContext({} as ContextType);
  * @returns
  */
 export const AuthProvider: FC<Props> = ({ children }) => {
-  const { user, isAuth, signIn } = useAuth();
+  const { user, isAuth, signIn, signOut } = useAuth();
 
-  return <AuthContext.Provider value={{ user, isAuth, signIn }}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuth,
+        signIn,
+        signOut,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuthContext = () => useContext(AuthContext);

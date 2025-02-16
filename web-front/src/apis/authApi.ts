@@ -70,3 +70,56 @@ export const signUpApi = async (name: string, email: string, password: string, p
     return res;
   }
 };
+
+/**
+ * ログアウトAPI
+ * @returns ログアウト成功時はトークン、失敗時はエラーメッセージ
+ */
+export const logoutApi = async () => {
+  try {
+    const { data }: AxiosResponse<AuthResponseType> = await globalAxios.post('/logout');
+    const res: ResponseType = {
+      success: true,
+      message: data.message,
+    };
+    return res;
+  } catch (error) {
+    const res: ResponseType = {
+      success: false,
+      message: 'ログアウトに失敗しました',
+    };
+    if (isAxiosError(error)) {
+      const axiosError = error as IErrorResponse;
+      res.message = axiosError.response?.data.message;
+    }
+    return res;
+  }
+};
+
+/**
+ * 認証チェックAPI
+ * @returns 認証チェック成功時はユーザー情報、失敗時はエラーメッセージ
+ */
+export const authenticationApi = async () => {
+  try {
+    const { data }: AxiosResponse<AuthResponseType> = await globalAxios.get('/authentication');
+    const res: AuthResponseType = {
+      success: true,
+      data: {
+        user: data.data.user,
+      },
+      message: data.message,
+    };
+    return res;
+  } catch (error) {
+    const res: ResponseType = {
+      success: false,
+      message: '認証チェックに失敗しました',
+    };
+    if (isAxiosError(error)) {
+      const axiosError = error as IErrorResponse;
+      res.message = axiosError.response?.data.message;
+    }
+    return res;
+  }
+};

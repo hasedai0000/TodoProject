@@ -9,7 +9,7 @@ export type UserType = {
 export type AuthResponseType = {
   success: boolean;
   data: {
-    token: string;
+    token?: string;
     user: UserType;
   };
   message: string;

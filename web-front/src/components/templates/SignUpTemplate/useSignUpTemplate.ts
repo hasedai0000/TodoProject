@@ -79,7 +79,7 @@ export const useSignUpTemplate = ({ signIn }: Props) => {
       const res = await signUpApi(name, email, password, password_confirmation);
       if (res?.data) {
         signIn(res.data.user);
-        localStorage.setItem('access_token', res.data.token);
+        localStorage.setItem('access_token', res.data.token || '');
         router.push(NAVIGATION_PATH.TOP);
       }
     },
