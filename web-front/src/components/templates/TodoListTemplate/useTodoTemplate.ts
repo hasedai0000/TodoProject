@@ -47,5 +47,5 @@ export const useTodoTemplate = ({ originTodoList }: Params) => {
     handleChangeSearchWord,
   };
 
-  return { states, actions } as const;
+  return [states, actions] as const;
 };

@@ -62,7 +62,7 @@ Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
 
 {
-  "user_id": 12,
+  "user_id": 14,
   "title": "こんにちは",
   "content": "挨拶です。"
 }
