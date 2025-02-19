@@ -19,7 +19,6 @@ export const useTodo = () => {
 
   const fetchTodoList = useCallback(async () => {
     const res = await fetchTodoListApi();
-    console.log('確認', res);
     setOriginTodoList(res?.data && typeof res.data === 'object' ? res.data : []);
   }, [isAuth]);
 

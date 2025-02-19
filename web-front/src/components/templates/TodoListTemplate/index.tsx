@@ -9,6 +9,7 @@ import styles from './styles.module.css';
 import { useTodoContext } from '@/contexts/TodoContext';
 import { useTodoTemplate } from './useTodoTemplate';
 import { InputForm } from '@/components/atoms/InputForm';
+import { TodoList } from '@/components/organisms/TodoList';
 
 export const TodoListTemplate = () => {
   const { originTodoList } = useTodoContext();
@@ -23,13 +24,7 @@ export const TodoListTemplate = () => {
         </div>
         {/* Todoリスト一覧表示 */}
         <div className={styles.area}>
-          {showTodoList?.length > 0 && (
-            <ul>
-              {showTodoList.map((todo) => (
-                <li key={todo.id}>{todo.title}</li>
-              ))}
-            </ul>
-          )}
+          <TodoList todoList={showTodoList} />
         </div>
       </div>
     </BaseLayout>
