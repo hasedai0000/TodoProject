@@ -27,3 +27,30 @@ export const fetchTodoListApi = async () => {
     return res;
   }
 };
+
+/**
+ * Todoを削除
+ * @param todoId
+ * @returns
+ */
+export const deleteTodoApi = async (todoId: number) => {
+  try {
+    const { data }: AxiosResponse<TodoType> = await globalAxios.delete(`/todos/${todoId}`);
+    const res: ResponseType<TodoType> = {
+      success: true,
+      data: data.data.todo,
+      message: 'Todoを削除しました',
+    };
+    return res;
+  } catch (error) {
+    const res: ResponseType = {
+      success: false,
+      message: 'Todoを削除できませんでした',
+    };
+    if (isAxiosError(error)) {
+      const axiosError = error as IErrorResponse;
+      res.message = axiosError.response?.data.message;
+    }
+    return res;
+  }
+};

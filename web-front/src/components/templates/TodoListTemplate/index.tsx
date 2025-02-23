@@ -12,8 +12,11 @@ import { InputForm } from '@/components/atoms/InputForm';
 import { TodoList } from '@/components/organisms/TodoList';
 
 export const TodoListTemplate = () => {
-  const { originTodoList } = useTodoContext();
-  const [{ searchKeyword, showTodoList }, { handleChangeSearchWord }] = useTodoTemplate({ originTodoList });
+  const { originTodoList, deleteTodo } = useTodoContext();
+  const [{ searchKeyword, showTodoList }, { handleChangeSearchWord, handleDeleteTodo }] = useTodoTemplate({
+    originTodoList,
+    deleteTodo,
+  });
 
   return (
     <BaseLayout title={'TodoList'}>
@@ -24,7 +27,7 @@ export const TodoListTemplate = () => {
         </div>
         {/* Todoリスト一覧表示 */}
         <div className={styles.area}>
-          <TodoList todoList={showTodoList} />
+          <TodoList todoList={showTodoList} handleDeleteTodo={handleDeleteTodo} />
         </div>
       </div>
     </BaseLayout>
