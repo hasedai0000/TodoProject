@@ -4,7 +4,7 @@
  * @package hooks
  */
 
-import { fetchTodoListApi } from '@/apis/todoApi';
+import { deleteTodoApi, fetchTodoListApi } from '@/apis/todoApi';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { TodoType } from '@/interfaces/Todo';
 import { useCallback, useEffect, useState } from 'react';
@@ -19,12 +19,28 @@ export const useTodo = () => {
 
   const fetchTodoList = useCallback(async () => {
     const res = await fetchTodoListApi();
-    setOriginTodoList(res?.data && typeof res.data === 'object' ? res.data : []);
+    if (res.success) {
+      setOriginTodoList(res?.data && typeof res.data === 'object' ? res.data : []);
+    }
   }, [isAuth]);
+
+  /**
+   * todoを削除
+   * @param { number } todoId
+   */
+  const deleteTodo = useCallback(
+    async (todoId: number) => {
+      const res = await deleteTodoApi(todoId);
+      if (!res.data || typeof res.data !== 'object') return;
+      // todoを削除したtodo listで更新
+      setOriginTodoList(originTodoList.filter((todo) => todo.id !== res?.data?.id));
+    },
+    [isAuth]
+  );
 
   useEffect(() => {
     if (isAuth) fetchTodoList();
   }, [fetchTodoList, isAuth]);
 
-  return { originTodoList };
+  return { originTodoList, deleteTodo };
 };

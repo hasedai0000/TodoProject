@@ -384,6 +384,9 @@ components:
     TodoUpdateRequestDto:
       type: object
       properties:
+        id:
+          type: number
+          example: 1
         title:
           type: string
           example: タスク1
@@ -400,8 +403,26 @@ components:
           type: boolean
           example: true
         data:
-          type: array
-          example: []
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            user_id:
+              type: number
+              example: 1
+            title:
+              type: string
+              example: タスク1
+            content:
+              type: string
+              example: タスクの内容
+            is_completed:
+              type: boolean
+              example: false
+            deleted_at:
+              type: string
+              example: "2022-10-28T08:38:14.237Z"
         message:
           type: string
           example: Todo deleted successfully.

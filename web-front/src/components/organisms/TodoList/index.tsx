@@ -13,12 +13,13 @@ import { faPenToSquare, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-
 
 type Props = {
   todoList: Array<TodoType>;
+  handleDeleteTodo: (todoId: number, todoTitle: string) => Promise<void>;
 };
 
 /**
  * BaseLayout
  */
-export const TodoList: FC<Props> = ({ todoList }) => {
+export const TodoList: FC<Props> = ({ todoList, handleDeleteTodo }) => {
   return (
     <ul className={styles.list}>
       {todoList.map((todo) => (
@@ -32,7 +33,7 @@ export const TodoList: FC<Props> = ({ todoList }) => {
               <FontAwesomeIcon icon={faPenToSquare} size="lg" />
             </div>
             <div className={styles.far}>
-              <FontAwesomeIcon icon={faTrashAlt} size="lg" />
+              <FontAwesomeIcon icon={faTrashAlt} size="lg" onClick={() => handleDeleteTodo(todo.id, todo.title)} />
             </div>
           </div>
         </li>
