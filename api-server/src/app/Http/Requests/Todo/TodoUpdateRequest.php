@@ -26,7 +26,7 @@ class TodoUpdateRequest extends FormRequest
     return [
       'title' => ['required', 'string'],
       'content' => ['required', 'string'],
-      'is_completed' => ['required', 'boolean'],
+      // 'is_completed' => ['required', 'boolean'],
     ];
   }
 }

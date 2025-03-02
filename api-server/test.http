@@ -84,7 +84,6 @@ Authorization: Bearer {{login.response.body.data.token}}
 {
   "title": "こんにちははははは",
   "content": "挨拶です。",
-  "is_completed": false
 }
 
 ### loginで取得したtokenを使用してTodoを削除

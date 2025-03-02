@@ -7,7 +7,7 @@
 import { FC } from 'react';
 import styles from './style.module.css';
 
-type Props = JSX.IntrinsicElements['input'];
+type Props = JSX.IntrinsicElements['textarea'];
 /**
  * TextArea
  * @param disabled

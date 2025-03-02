@@ -416,9 +416,9 @@ components:
         content:
           type: string
           example: タスクの内容1
-        is_completed:
-          type: boolean
-          example: true
+        # is_completed:
+        #   type: boolean
+        #   example: true
     TodoDeleteResponseDto:
       type: object
       properties:
