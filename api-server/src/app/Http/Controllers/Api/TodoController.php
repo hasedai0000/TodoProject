@@ -49,13 +49,13 @@ class TodoController extends BaseController
     $params = $request->only([
       'title',
       'content',
-      'is_completed',
+      // 'is_completed',
     ]);
     $todo = $this->service->updateTodo(
       $id,
       $params['title'],
       $params['content'],
-      $params['is_completed'],
+      // $params['is_completed'],
     );
     $success['todo'] = $todo;
     return $this->sendResponse($success, 'Todo updated successfully.');

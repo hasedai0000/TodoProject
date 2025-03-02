@@ -9,7 +9,6 @@ import styles from './styles.module.css';
 
 import { useTodoDetailTemplate } from './useTodoDetailTemplate';
 import { InputForm } from '@/components/atoms/InputForm';
-import { TodoList } from '@/components/organisms/TodoList';
 import { TextArea } from '@/components/atoms/TextArea';
 
 export const TodoDetailTemplate = () => {

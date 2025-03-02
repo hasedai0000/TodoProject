@@ -21,7 +21,7 @@ type Props = {
  * BaseLayout
  */
 export const TodoList: FC<Props> = ({ todoList, handleDeleteTodo }) => {
-  const [{ handleMoveDetailPage }] = useTodoList();
+  const [{ handleMoveDetailPage, handleMoveEditPage }] = useTodoList();
 
   return (
     <ul className={styles.list}>
@@ -33,7 +33,7 @@ export const TodoList: FC<Props> = ({ todoList, handleDeleteTodo }) => {
               <FontAwesomeIcon icon={faFile} size="lg" onClick={() => handleMoveDetailPage(todo.id)} />
             </div>
             <div className={styles.far}>
-              <FontAwesomeIcon icon={faPenToSquare} size="lg" />
+              <FontAwesomeIcon icon={faPenToSquare} size="lg" onClick={() => handleMoveEditPage(todo.id)} />
             </div>
             <div className={styles.far}>
               <FontAwesomeIcon icon={faTrashAlt} size="lg" onClick={() => handleDeleteTodo(todo.id, todo.title)} />
