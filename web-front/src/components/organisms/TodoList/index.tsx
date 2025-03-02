@@ -9,7 +9,8 @@ import { FC } from 'react';
 import styles from './styles.module.css';
 import { TodoType } from '@/interfaces/Todo';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPenToSquare, faTrash, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faFile, faPenToSquare, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { useTodoList } from './useTodoList';
 
 type Props = {
   todoList: Array<TodoType>;
@@ -20,6 +21,8 @@ type Props = {
  * BaseLayout
  */
 export const TodoList: FC<Props> = ({ todoList, handleDeleteTodo }) => {
+  const [{ handleMoveDetailPage }] = useTodoList();
+
   return (
     <ul className={styles.list}>
       {todoList.map((todo) => (
@@ -27,7 +30,7 @@ export const TodoList: FC<Props> = ({ todoList, handleDeleteTodo }) => {
           <span className={styles.task}>{todo.title}</span>
           <div className={styles.area}>
             <div className={styles.far}>
-              <FontAwesomeIcon icon={faTrash} size="lg" />
+              <FontAwesomeIcon icon={faFile} size="lg" onClick={() => handleMoveDetailPage(todo.id)} />
             </div>
             <div className={styles.far}>
               <FontAwesomeIcon icon={faPenToSquare} size="lg" />

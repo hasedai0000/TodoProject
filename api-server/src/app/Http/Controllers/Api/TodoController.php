@@ -37,6 +37,13 @@ class TodoController extends BaseController
     return $this->sendResponse($success, 'Todo created successfully.');
   }
 
+  public function show(int $id)
+  {
+    $todo = $this->service->getTodo($id);
+    $success['todo'] = $todo;
+    return $this->sendResponse($success, 'Todo fetched successfully.');
+  }
+
   public function update(TodoUpdateRequest $request, int $id)
   {
     $params = $request->only([

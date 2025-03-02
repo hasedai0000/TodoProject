@@ -108,6 +108,29 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorDto"
   /api/todos/{id}:
+    get:
+      operationId: TodoController_show
+      tags: [Todo]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: タスク取得完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodoEntity"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
     put:
       operationId: TodoController_update
       tags: [Todo]

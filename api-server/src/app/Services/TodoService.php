@@ -36,6 +36,11 @@ class TodoService
     return $this->repository->store($todo);
   }
 
+  public function getTodo(int $id): EntityTodo
+  {
+    return $this->repository->findById($id);
+  }
+
   public function updateTodo(
     int $id,
     string $title,

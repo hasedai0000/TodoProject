@@ -67,6 +67,13 @@ Authorization: Bearer {{login.response.body.data.token}}
   "content": "挨拶です。"
 }
 
+### loginで取得したtokenを使用してTodoを取得
+# @name get_todo
+GET {{baseUrl}}/todos/1/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}
+
 ### loginで取得したtokenを使用してTodoを更新
 # @name update_todo
 PUT {{baseUrl}}/todos/4/
