@@ -13,6 +13,7 @@ type Props = {
 };
 
 type ContextType = {
+  addTodo: (userId: number, title: string, content: string) => Promise<void>;
   originTodoList: Array<TodoType>;
   deleteTodo: (todoId: number) => Promise<void>;
   updateTodo: (todoId: number, title: string, content: string) => Promise<void>;
@@ -27,9 +28,11 @@ const TodoContext = createContext({} as ContextType);
  */
 export const TodoProvider: FC<Props> = ({ children }) => {
   // カスタムフックから状態とロジックを呼び出してコンテキストプロバイダーにあてがう
-  const { originTodoList, deleteTodo, updateTodo } = useTodo();
+  const { addTodo, originTodoList, deleteTodo, updateTodo } = useTodo();
 
-  return <TodoContext.Provider value={{ originTodoList, deleteTodo, updateTodo }}>{children}</TodoContext.Provider>;
+  return (
+    <TodoContext.Provider value={{ addTodo, originTodoList, deleteTodo, updateTodo }}>{children}</TodoContext.Provider>
+  );
 };
 
 export const useTodoContext = () => useContext(TodoContext);

@@ -56,6 +56,35 @@ export const fetchTodoDetailApi = async (todoId: number) => {
 };
 
 /**
+ * Todo作成
+ * @param userId
+ * @param title
+ * @param content
+ * @returns
+ */
+export const createTodoApi = async (userId: number, title: string, content: string) => {
+  try {
+    const { data }: AxiosResponse<TodoType> = await globalAxios.post('/todos', { user_id: userId, title, content });
+    const res: ResponseType<TodoType> = {
+      success: true,
+      data: data.data.todo,
+      message: 'Todoを作成しました',
+    };
+    return res;
+  } catch (error) {
+    const res: ResponseType = {
+      success: false,
+      message: 'Todoを作成できませんでした',
+    };
+    if (isAxiosError(error)) {
+      const axiosError = error as IErrorResponse;
+      res.message = axiosError.response?.data.message;
+    }
+    return res;
+  }
+};
+
+/**
  * Todoを更新
  * @param todoId
  * @param title
