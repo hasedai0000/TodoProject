@@ -23,7 +23,7 @@ class AuthController extends BaseController
     $input['password'] = bcrypt($input['password']);
     $user = User::create($input);
     $success['token'] =  $user->createToken('AccessToken')->plainTextToken;
-    $success['name'] =  $user->name;
+    $success['user'] =  $user;
 
     return $this->sendResponse($success, 'User register successfully.');
   }
@@ -42,7 +42,7 @@ class AuthController extends BaseController
       /** @var \App\Models\User $user **/
       $user = Auth::user();
       $success['token'] = $user->createToken('AccessToken')->plainTextToken;
-      $success['name'] = $user->name;
+      $success['user'] = $user;
 
       return $this->sendResponse($success, 'User login successfully.');
     } else {
@@ -59,5 +59,20 @@ class AuthController extends BaseController
   {
     $request->user()->currentAccessToken()->delete();
     return $this->sendResponse([], 'User logout successfully.');
+  }
+
+  /**
+   * check authenticated user
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function authentication(Request $request)
+  {
+    if ($request->user() && Auth::check()) {
+      $user = Auth::user();
+      $success['user'] = $user;
+      return $this->sendResponse($success, 'User authenticated successfully.');
+    }
+    return $this->sendError('User is not authenticated.', ['error' => 'Not authenticated.']);
   }
 }

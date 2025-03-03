@@ -40,6 +40,13 @@ Content-Type: application/json
 Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
 
+### 認証チェック
+# @name authentication
+GET {{baseUrl}}/authentication/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}
+
 ### loginで取得したtokenを使用してTodo一覧を取得
 # @name get_todos
 GET {{baseUrl}}/todos/
@@ -55,10 +62,17 @@ Accept: application/json
 Authorization: Bearer {{login.response.body.data.token}}
 
 {
-  "user_id": 12,
+  "user_id": 14,
   "title": "こんにちは",
   "content": "挨拶です。"
 }
+
+### loginで取得したtokenを使用してTodoを取得
+# @name get_todo
+GET {{baseUrl}}/todos/1/
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{login.response.body.data.token}}
 
 ### loginで取得したtokenを使用してTodoを更新
 # @name update_todo
@@ -70,7 +84,6 @@ Authorization: Bearer {{login.response.body.data.token}}
 {
   "title": "こんにちははははは",
   "content": "挨拶です。",
-  "is_completed": false
 }
 
 ### loginで取得したtokenを使用してTodoを削除

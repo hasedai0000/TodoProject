@@ -52,7 +52,7 @@ class TodoRepository implements TodoRepositoryInterface
     if ($eloquentTodo !== null) {
       $eloquentTodo->title = $todo->getTitle();
       $eloquentTodo->content = $todo->getContent();
-      $eloquentTodo->is_completed = $todo->getIsCompleted();
+      // $eloquentTodo->is_completed = $todo->getIsCompleted();
       $eloquentTodo->save();
     }
 
@@ -61,7 +61,7 @@ class TodoRepository implements TodoRepositoryInterface
       $eloquentTodo->user_id,
       $eloquentTodo->title,
       $eloquentTodo->content,
-      $eloquentTodo->is_completed,
+      $eloquentTodo->is_completed
     );
   }
 

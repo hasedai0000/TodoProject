@@ -10,10 +10,13 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('authentication', [AuthController::class, 'authentication'])->name('authentication');
+
 
     Route::controller(TodoController::class)->group(function () {
         Route::get('/todos', 'index')->name('todos.index');
         Route::post('/todos', 'store')->name('todos.store');
+        Route::get('/todos/{id}', 'show')->name('todos.show')->where('id', '[0-9]+');
         Route::put('/todos/{id}', 'update')->name('todos.update')->where('id', '[0-9]+');
         Route::delete('/todos/{id}', 'delete')->name('todos.delete')->where('id', '[0-9]+');
     });
