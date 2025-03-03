@@ -36,26 +36,33 @@ class TodoService
     return $this->repository->store($todo);
   }
 
+  public function getTodo(int $id): EntityTodo
+  {
+    return $this->repository->findById($id);
+  }
+
   public function updateTodo(
     int $id,
     string $title,
-    string $content,
-    bool $isCompleted
-  ): EntityTodo {
+    string $content
+    // bool $isCompleted
+  ): ?EntityTodo {
     $todo = $this->repository->findById($id);
     if ($todo !== null) {
       $todo->setTitle($title);
       $todo->setContent($content);
-      $todo->setIsCompleted($isCompleted);
+      // $todo->setIsCompleted($isCompleted);
       return $this->repository->update($todo);
     }
+    return null;
   }
 
-  public function deleteTodo(int $id): EntityTodo
+  public function deleteTodo(int $id): ?EntityTodo
   {
     $todo = $this->repository->findById($id);
     if ($todo !== null) {
       return $this->repository->delete($todo);
     }
+    return null;
   }
 }

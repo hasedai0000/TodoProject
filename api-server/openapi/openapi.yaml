@@ -108,6 +108,29 @@ paths:
               schema:
                 $ref: "#/components/schemas/ErrorDto"
   /api/todos/{id}:
+    get:
+      operationId: TodoController_show
+      tags: [Todo]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          description: タスク取得完了
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TodoEntity"
+        "401":
+          description: 認証エラー
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorDto"
     put:
       operationId: TodoController_update
       tags: [Todo]
@@ -384,15 +407,18 @@ components:
     TodoUpdateRequestDto:
       type: object
       properties:
+        id:
+          type: number
+          example: 1
         title:
           type: string
           example: タスク1
         content:
           type: string
           example: タスクの内容1
-        is_completed:
-          type: boolean
-          example: true
+        # is_completed:
+        #   type: boolean
+        #   example: true
     TodoDeleteResponseDto:
       type: object
       properties:
@@ -400,8 +426,26 @@ components:
           type: boolean
           example: true
         data:
-          type: array
-          example: []
+          type: object
+          properties:
+            id:
+              type: number
+              example: 1
+            user_id:
+              type: number
+              example: 1
+            title:
+              type: string
+              example: タスク1
+            content:
+              type: string
+              example: タスクの内容
+            is_completed:
+              type: boolean
+              example: false
+            deleted_at:
+              type: string
+              example: "2022-10-28T08:38:14.237Z"
         message:
           type: string
           example: Todo deleted successfully.

@@ -4,14 +4,14 @@
  * @package components
  */
 
-import { FC } from 'react';
+import { FC, ReactNode } from 'react';
 
 import styles from './styles.module.css';
 import { Navigation } from '@/components/molecules/Navigation';
 
 type Props = {
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
 };
 
 /**

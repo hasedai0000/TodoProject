@@ -15,7 +15,7 @@ class Todo implements \JsonSerializable
     ?int $userId,
     ?string $title,
     ?string $content,
-    ?bool $isCompleted,
+    ?bool $isCompleted
   ) {
     $this->id = $id;
     $this->userId = $userId;

@@ -10,6 +10,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 type Params = {
   originTodoList: Array<TodoType>;
+  deleteTodo: (todoId: number) => Promise<void>;
 };
 
 type StatesType = {
@@ -19,9 +20,10 @@ type StatesType = {
 
 type ActionsType = {
   handleChangeSearchWord: EventType['onChangeInput'];
+  handleDeleteTodo: (todoId: number, todoTitle: string) => Promise<void>;
 };
 
-export const useTodoTemplate = ({ originTodoList }: Params) => {
+export const useTodoTemplate = ({ originTodoList, deleteTodo }: Params) => {
   // 検索キーワード
   const [searchKeyword, setSearchKeyword] = useState('');
   // 表示用TodoList
@@ -38,6 +40,16 @@ export const useTodoTemplate = ({ originTodoList }: Params) => {
     setSearchKeyword(e.target.value);
   }, []);
 
+  // todoを削除する
+  const handleDeleteTodo = useCallback(
+    async (todoId: number, todoTitle: string) => {
+      if (window.confirm(`「${todoTitle}」を削除しますか？`)) {
+        await deleteTodo(todoId);
+      }
+    },
+    [deleteTodo]
+  );
+
   const states: StatesType = {
     searchKeyword,
     showTodoList,
@@ -45,7 +57,8 @@ export const useTodoTemplate = ({ originTodoList }: Params) => {
 
   const actions: ActionsType = {
     handleChangeSearchWord,
+    handleDeleteTodo,
   };
 
-  return { states, actions } as const;
+  return [states, actions] as const;
 };
